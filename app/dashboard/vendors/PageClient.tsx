@@ -19,7 +19,7 @@ interface Vendor {
 }
 
 interface PageClientProps {
-  initialVendors: Vendor[];
+  initialVendors?: Vendor[];
 }
 
 function getComplianceHealthBadge(score: number, openIssues: number) {
@@ -426,7 +426,7 @@ function VendorCard({ vendor }: { vendor: Vendor }) {
   );
 }
 
-export default function PageClient({ initialVendors }: PageClientProps) {
+export default function PageClient({ initialVendors = [] }: PageClientProps) {
   const router = useRouter();
   const [vendors, setVendors] = useState<Vendor[]>(initialVendors);
   const [showModal, setShowModal] = useState(false);

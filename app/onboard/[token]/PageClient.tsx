@@ -13,10 +13,10 @@ interface Credential {
 }
 
 interface PageClientProps {
-  vendorId: string;
-  vendorName: string;
-  token: string;
-  existingCredentials: Credential[];
+  vendorId?: string;
+  vendorName?: string;
+  token?: string;
+  existingCredentials?: Credential[];
 }
 
 const CERTIFICATE_TYPES = [
@@ -33,10 +33,10 @@ const CERTIFICATE_TYPES = [
 ];
 
 export default function PageClient({
-  vendorId,
-  vendorName,
-  token,
-  existingCredentials,
+  vendorId = '',
+  vendorName = '',
+  token = '',
+  existingCredentials = [],
 }: PageClientProps) {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);

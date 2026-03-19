@@ -218,3 +218,7 @@ migrate().catch((error) => {
   console.error("Fatal migration error:", error);
   process.exit(1);
 });
+
+export async function runMigration() {
+  await migrate();
+}

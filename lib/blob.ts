@@ -4,7 +4,7 @@ export async function uploadCredentialFile(
   file: File | Blob,
   filename: string,
   options?: {
-    access?: "public" | "private";
+    access?: "public";
     contentType?: string;
   },
 ): Promise<string> {

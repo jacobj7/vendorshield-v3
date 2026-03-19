@@ -1,16 +1,10 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { compare } from "bcryptjs";
 import { Pool } from "pg";
-import bcrypt from "bcryptjs";
-import { z } from "zod";
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-});
-
-const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(1),
 });
 
 export const authOptions: NextAuthOptions = {
@@ -22,25 +16,30 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        try {
-          const validated = loginSchema.parse(credentials);
+        if (!credentials?.email || !credentials?.password) {
+          return null;
+        }
 
+        try {
           const result = await pool.query(
             "SELECT * FROM users WHERE email = $1",
-            [validated.email],
+            [credentials.email],
           );
 
           const user = result.rows[0];
-          if (!user) return null;
+          if (!user) {
+            return null;
+          }
 
           const passwordField = user.password_hash ?? user.password;
-          if (!passwordField) return null;
+          if (!passwordField) {
+            return null;
+          }
 
-          const isValid = await bcrypt.compare(
-            validated.password,
-            passwordField,
-          );
-          if (!isValid) return null;
+          const isValid = await compare(credentials.password, passwordField);
+          if (!isValid) {
+            return null;
+          }
 
           return {
             id: String(user.id),
